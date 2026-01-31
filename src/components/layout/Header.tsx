@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Search, HelpCircle, ChevronRight, Home } from "lucide-react";
+import { Bell, Search, HelpCircle, ChevronRight, Home, Menu } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useStore } from "@/store/useStore";
@@ -11,7 +11,7 @@ export function Header() {
     const pathname = usePathname();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { auditLogs, openSettings } = useStore();
+    const { auditLogs, openSettings, setMobileMenuOpen } = useStore();
 
     // Breadcrumb logic
     const paths = pathname.split('/').filter(Boolean);
@@ -59,28 +59,37 @@ export function Header() {
         <header className="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-gray-100 shadow-sm px-8 py-4">
             <div className="flex items-center justify-between gap-8">
                 {/* Breadcrumbs */}
-                <nav className="hidden md:flex items-center gap-2 text-sm text-slate-500">
-                    <div className="p-1.5 bg-slate-50 rounded-lg text-slate-400">
-                        <Home size={14} />
-                    </div>
-                    {breadcrumbs.length > 0 && <ChevronRight size={14} className="text-slate-300" />}
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => setMobileMenuOpen(true)}
+                        className="md:hidden p-2 -ml-2 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors"
+                    >
+                        <Menu size={20} />
+                    </button>
 
-                    {breadcrumbs.length === 0 ? (
-                        <span className="font-bold text-slate-800">Dashboard</span>
-                    ) : (
-                        breadcrumbs.map((crumb, index) => (
-                            <div key={crumb.href} className="flex items-center gap-2">
-                                <span className={cn(
-                                    "font-medium transition-colors",
-                                    index === breadcrumbs.length - 1 ? "text-slate-900 font-bold" : "hover:text-slate-800"
-                                )}>
-                                    {crumb.label === 'Audit' ? 'Audit & Inspection' : crumb.label}
-                                </span>
-                                {index < breadcrumbs.length - 1 && <ChevronRight size={14} className="text-slate-300" />}
-                            </div>
-                        ))
-                    )}
-                </nav>
+                    <nav className="hidden md:flex items-center gap-2 text-sm text-slate-500">
+                        <div className="p-1.5 bg-slate-50 rounded-lg text-slate-400">
+                            <Home size={14} />
+                        </div>
+                        {breadcrumbs.length > 0 && <ChevronRight size={14} className="text-slate-300" />}
+
+                        {breadcrumbs.length === 0 ? (
+                            <span className="font-bold text-slate-800">Dashboard</span>
+                        ) : (
+                            breadcrumbs.map((crumb, index) => (
+                                <div key={crumb.href} className="flex items-center gap-2">
+                                    <span className={cn(
+                                        "font-medium transition-colors",
+                                        index === breadcrumbs.length - 1 ? "text-slate-900 font-bold" : "hover:text-slate-800"
+                                    )}>
+                                        {crumb.label === 'Audit' ? 'Audit & Inspection' : crumb.label}
+                                    </span>
+                                    {index < breadcrumbs.length - 1 && <ChevronRight size={14} className="text-slate-300" />}
+                                </div>
+                            ))
+                        )}
+                    </nav>
+                </div>
 
                 {/* Search Bar */}
                 <form onSubmit={handleSearchSubmit} className="flex-1 max-w-md relative group">
