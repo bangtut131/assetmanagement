@@ -19,6 +19,7 @@ interface AppState {
     auditSessions: AuditSession[];
     currentAuditId: string | null;
     currentUser: User | null;
+    users: User[];
 
     // UI State
     isSettingsOpen: boolean;
