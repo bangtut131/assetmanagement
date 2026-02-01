@@ -72,7 +72,7 @@ export function AssetForm({ asset, onClose }: AssetFormProps) {
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="flex-1 p-4 md:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <form onSubmit={handleSubmit} className="flex-1 p-4 md:p-6 lg:p-8 grid grid-cols-2 lg:grid-cols-3 gap-6">
                     {/* Left Column: Image & Quick Stats */}
                     <div className="space-y-6">
                         <div className="space-y-2">
@@ -124,7 +124,7 @@ export function AssetForm({ asset, onClose }: AssetFormProps) {
 
                     {/* Right Column: Form Fields */}
                     <div className="lg:col-span-2 space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-2 gap-6">
                             <div className="space-y-1.5 col-span-2">
                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
                                     <Tag size={14} /> Asset Name
