@@ -73,6 +73,7 @@ export function AssetForm({ asset, onClose }: AssetFormProps) {
                 </div>
 
                 <form onSubmit={handleSubmit} className="flex-1 p-4 md:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* Mobile Layout: Single Column Enforced (v2.1) */}
                     {/* Left Column: Image & Quick Stats */}
                     <div className="space-y-6">
                         <div className="space-y-2">
