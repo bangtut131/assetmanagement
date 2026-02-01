@@ -124,7 +124,7 @@ export function AssetForm({ asset, onClose }: AssetFormProps) {
 
                     {/* Right Column: Form Fields */}
                     <div className="lg:col-span-2 space-y-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <div className="space-y-1.5 col-span-2">
                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
                                     <Tag size={14} /> Asset Name
@@ -160,7 +160,7 @@ export function AssetForm({ asset, onClose }: AssetFormProps) {
                                 </div>
                             </div>
 
-                            <div className="space-y-1.5 col-span-2 md:col-span-1">
+                            <div className="space-y-1.5 col-span-2 lg:col-span-1">
                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
                                     <Scan size={14} /> Barcode / QR
                                 </label>
@@ -174,7 +174,7 @@ export function AssetForm({ asset, onClose }: AssetFormProps) {
                                 </div>
                             </div>
 
-                            <div className="space-y-1.5 col-span-2 md:col-span-1">
+                            <div className="space-y-1.5 col-span-2 lg:col-span-1">
                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Purchase Price</label>
                                 <div className="relative">
                                     <span className="absolute left-4 top-3.5 text-slate-400 font-medium">Rp</span>
