@@ -125,7 +125,8 @@ export function AssetForm({ asset, onClose }: AssetFormProps) {
 
                     {/* Right Column: Form Fields */}
                     <div className="lg:col-span-2 space-y-6">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {/* Force Vertical Stack on Mobile using Flexbox */}
+                        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-6 border-2 border-transparent relative">
                             <div className="space-y-1.5 col-span-2">
                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
                                     <Tag size={14} /> Asset Name
