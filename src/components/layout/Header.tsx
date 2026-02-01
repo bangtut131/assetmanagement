@@ -11,7 +11,7 @@ export function Header() {
     const pathname = usePathname();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { auditLogs, openSettings, setMobileMenuOpen } = useStore();
+    const { auditLogs, setMobileMenuOpen } = useStore();
 
     // Breadcrumb logic
     const paths = pathname.split('/').filter(Boolean);
@@ -163,7 +163,7 @@ export function Header() {
                                     </div>
                                     <button
                                         onClick={() => {
-                                            openSettings('logs');
+                                            router.push('/settings?tab=logs');
                                             setShowNotifications(false);
                                         }}
                                         className="w-full p-2 text-center text-xs font-bold text-indigo-600 hover:bg-indigo-50 rounded-b-xl transition-colors"

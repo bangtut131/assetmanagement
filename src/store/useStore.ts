@@ -22,11 +22,7 @@ interface AppState {
     users: User[];
 
     // UI State
-    isSettingsOpen: boolean;
     isMobileMenuOpen: boolean;
-    settingsActiveTab: 'general' | 'logs' | 'users' | 'permissions' | 'profile';
-    openSettings: (tab?: 'general' | 'logs' | 'users' | 'permissions' | 'profile') => void;
-    closeSettings: () => void;
     setMobileMenuOpen: (isOpen: boolean) => void;
 
     // Permissions
@@ -79,13 +75,9 @@ export const useStore = create<AppState>((set, get) => ({
     users: [],
     currentAuditId: null,
     currentUser: null,
-    isSettingsOpen: false,
     isMobileMenuOpen: false,
-    settingsActiveTab: 'general',
     rolePermissions: ROLE_PERMISSIONS,
 
-    openSettings: (tab = 'general') => set({ isSettingsOpen: true, settingsActiveTab: tab }),
-    closeSettings: () => set({ isSettingsOpen: false }),
     setMobileMenuOpen: (isOpen) => set({ isMobileMenuOpen: isOpen }),
 
     fetchInitialData: async () => {

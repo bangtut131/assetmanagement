@@ -6,7 +6,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { SettingsModal } from "./SettingsModal";
+
 import { useStore } from "@/store/useStore";
 
 const menuItems = [
@@ -19,7 +19,7 @@ const menuItems = [
 
 export function Sidebar() {
     const pathname = usePathname();
-    const { currentUser, hasPermission, isSettingsOpen, openSettings, closeSettings, isMobileMenuOpen, setMobileMenuOpen } = useStore();
+    const { currentUser, hasPermission, isMobileMenuOpen, setMobileMenuOpen } = useStore();
 
     // Close mobile menu on route change
     useEffect(() => {
@@ -129,19 +129,19 @@ export function Sidebar() {
                     </div>
 
                     {hasPermission('settings', 'view') && (
-                        <button
-                            onClick={() => openSettings('general')}
+                        <Link
+                            href="/settings"
                             className="flex items-center justify-center gap-2 text-xs font-semibold text-slate-300 hover:text-white transition-colors py-2 rounded-lg hover:bg-white/5 w-full border border-transparent hover:border-slate-600 mb-2"
                         >
                             <Settings size={14} /> System Settings
-                        </button>
+                        </Link>
                     )}
                     <div className="text-[10px] text-center text-slate-600 pt-2 border-t border-slate-700/50 font-mono">
                         v1.0.2 Stable
                     </div>
                 </div>
 
-                {isSettingsOpen && <SettingsModal onClose={closeSettings} />}
+                {/* SettingsModal removed: Replaced by /settings page */}
             </aside>
         </>
     );
