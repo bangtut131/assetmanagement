@@ -92,12 +92,40 @@ export const useStore = create<AppState>()(
                     const { data: logs } = await supabase.from('audit_logs').select('*').order('created_at', { ascending: false });
                     const { data: sessions } = await supabase.from('audit_sessions').select('*').order('created_at', { ascending: false });
 
+                    // Mappers
+                    const mapAsset = (a: any): Asset => ({
+                        id: a.id, name: a.name, category: a.category, price: a.price, status: a.status, barcode: a.barcode, image: a.image,
+                        locationId: a.location_id,
+                        purchaseDate: a.purchase_date,
+                        usefulLife: a.useful_life,
+                        deletionStatus: a.deletion_status,
+                        deletionRequestDate: a.deletion_request_date
+                    });
+
+                    const mapLocation = (l: any): Location => ({
+                        id: l.id, name: l.name,
+                        parentId: l.parent_id
+                    });
+
+                    const mapSession = (s: any): AuditSession => ({
+                        id: s.id, name: s.name, status: s.status,
+                        startDate: s.start_date,
+                        endDate: s.end_date,
+                        auditorName: s.auditor_name,
+                        totalAssetsToCheck: s.scanned_assets ? 0 : 0, // Fallback, actually we might need to calc this or store it? DB doesn't have totalAssetsToCheck
+                        scannedAssets: s.scanned_assets || [],
+                        missingAssets: s.missing_assets || [],
+                    });
+                    // Note: totalAssetsToCheck was not in DB. We might need to derive it or ignore it for now.
+                    // Assuming it's derived from assets count at the time? Or just live.
+                    // For now let's set it to 0 or derive from live assets.
+
                     set({
-                        assets: assets || [],
-                        locations: locations || [],
+                        assets: (assets || []).map(mapAsset),
+                        locations: (locations || []).map(mapLocation),
                         users: users || [],
                         auditLogs: logs || [],
-                        auditSessions: sessions || [],
+                        auditSessions: (sessions || []).map(mapSession).map(s => ({ ...s, totalAssetsToCheck: (assets || []).length })), // Approx
                         isLoading: false
                     });
                 } catch (error) {
@@ -192,13 +220,30 @@ export const useStore = create<AppState>()(
             },
 
             addAsset: async (asset) => {
-                await supabase.from('assets').insert([asset]);
+                const dbAsset = {
+                    id: asset.id, name: asset.name, category: asset.category, price: asset.price, status: asset.status, barcode: asset.barcode, image: asset.image,
+                    location_id: asset.locationId,
+                    purchase_date: asset.purchaseDate,
+                    useful_life: asset.usefulLife,
+                    deletion_status: asset.deletionStatus,
+                    deletion_request_date: asset.deletionRequestDate
+                };
+                const { error } = await supabase.from('assets').insert([dbAsset]);
+                if (error) { console.error("Failed to add asset:", error); return; }
                 set((state) => ({ assets: [asset, ...state.assets] }));
                 get().addLog('CREATE', asset.name, `Added new asset ${asset.name}`);
             },
 
             updateAsset: async (asset) => {
-                await supabase.from('assets').update(asset).eq('id', asset.id);
+                const dbAsset = {
+                    name: asset.name, category: asset.category, price: asset.price, status: asset.status, barcode: asset.barcode, image: asset.image,
+                    location_id: asset.locationId,
+                    purchase_date: asset.purchaseDate,
+                    useful_life: asset.usefulLife,
+                    deletion_status: asset.deletionStatus,
+                    deletion_request_date: asset.deletionRequestDate
+                };
+                await supabase.from('assets').update(dbAsset).eq('id', asset.id);
                 set((state) => ({ assets: state.assets.map(a => a.id === asset.id ? asset : a) }));
                 get().addLog('UPDATE', asset.name, `Updated details for ${asset.name}`);
             },
@@ -231,7 +276,13 @@ export const useStore = create<AppState>()(
             },
 
             addLocation: async (location) => {
-                await supabase.from('locations').insert([location]);
+                const dbLocation = {
+                    id: location.id,
+                    name: location.name,
+                    parent_id: location.parentId
+                };
+                const { error } = await supabase.from('locations').insert([dbLocation]);
+                if (error) { console.error("Failed to add location:", error); return; }
                 set((state) => ({ locations: [...state.locations, location] }));
                 get().addLog('CREATE', location.name, `Created location ${location.name}`);
             },
@@ -270,7 +321,17 @@ export const useStore = create<AppState>()(
                 };
                 set(state => ({ auditSessions: [newSession, ...state.auditSessions], currentAuditId: id }));
                 // Sync to DB
-                supabase.from('audit_sessions').insert([newSession]).then();
+                const dbSession = {
+                    id: newSession.id,
+                    name: newSession.name,
+                    start_date: newSession.startDate,
+                    end_date: newSession.endDate,
+                    status: newSession.status,
+                    auditor_name: newSession.auditorName,
+                    scanned_assets: newSession.scannedAssets,
+                    missing_assets: newSession.missingAssets
+                };
+                supabase.from('audit_sessions').insert([dbSession]).then();
                 get().addLog('AUDIT_START', 'Stock Opname', `Started new audit session`);
             },
 
@@ -343,8 +404,25 @@ export const useStore = create<AppState>()(
                 // Clear existing
                 await get().resetData();
                 // Bulk insert
-                if (data.assets.length) await supabase.from('assets').insert(data.assets);
-                if (data.locations.length) await supabase.from('locations').insert(data.locations);
+                if (data.assets.length) {
+                    const dbAssets = data.assets.map(a => ({
+                        id: a.id, name: a.name, category: a.category, price: a.price, status: a.status, barcode: a.barcode, image: a.image,
+                        location_id: a.locationId,
+                        purchase_date: a.purchaseDate,
+                        useful_life: a.usefulLife,
+                        deletion_status: a.deletionStatus,
+                        deletion_request_date: a.deletionRequestDate
+                    }));
+                    await supabase.from('assets').insert(dbAssets);
+                }
+                if (data.locations.length) {
+                    const dbLocations = data.locations.map(l => ({
+                        id: l.id,
+                        name: l.name,
+                        parent_id: l.parentId
+                    }));
+                    await supabase.from('locations').insert(dbLocations);
+                }
                 // Sync state
                 await get().fetchInitialData();
                 get().addLog('RESET', 'System', 'Data imported');
