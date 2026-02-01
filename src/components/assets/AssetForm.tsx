@@ -72,7 +72,7 @@ export function AssetForm({ asset, onClose }: AssetFormProps) {
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="flex-1 p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <form onSubmit={handleSubmit} className="flex-1 p-4 md:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Left Column: Image & Quick Stats */}
                     <div className="space-y-6">
                         <div className="space-y-2">
@@ -168,7 +168,7 @@ export function AssetForm({ asset, onClose }: AssetFormProps) {
                                     <input type="text" className="w-full border border-slate-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none font-mono text-sm bg-slate-50/50 focus:bg-white"
                                         value={formData.barcode || ''} onChange={e => setFormData({ ...formData, barcode: e.target.value })} placeholder="Scan or type..." />
                                     <button type="button" onClick={() => setIsScannerOpen(true)}
-                                        className="bg-slate-800 text-white px-4 rounded-xl hover:bg-slate-900 transition-colors shadow-lg shadow-slate-200">
+                                        className="bg-slate-800 text-white px-4 rounded-xl hover:bg-slate-900 transition-colors shadow-lg shadow-slate-200 shrink-0">
                                         <Scan size={20} />
                                     </button>
                                 </div>
@@ -199,7 +199,7 @@ export function AssetForm({ asset, onClose }: AssetFormProps) {
 
                             <div className="space-y-1.5 col-span-2">
                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Asset Status</label>
-                                <div className="grid grid-cols-4 gap-3">
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                                     {['Baik', 'Perbaikan', 'Rusak', 'Hilang'].map(status => (
                                         <button
                                             key={status}
